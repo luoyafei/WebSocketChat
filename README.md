@@ -1,1 +1,3 @@
 # WebSocketChat
+使用struts2+hibernate3+mybatis3整合
+搭建websocket的在线聊天室
