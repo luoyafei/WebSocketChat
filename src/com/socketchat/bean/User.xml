@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+	<!-- start,maxSize -->
+	<select id="getAllUser" resultType="User" parameterType="hashmap"><!-- 这里默认最大给取100 -->
+		select * from user u order by u.createDate asc limit #{start},#{maxSize}
+	</select>
+	
+	<select id="getRemoteIp4User" parameterType="string" resultType="_int">
+		select count(*) from user u where u.remoteIp = #{remoteIp}
+	</select>
+	
+	<!-- 通过用户昵称和密码获取用户信息，nickName，password -->
+	<select id="getOneUserFromNickAndPwd" parameterType="User" resultType="User">
+		select * from user u where u.nickName = #{nickName} and u.password = #{password}
+	</select>
+	<select id="getOneUser" resultType="User" parameterType="string"><!-- 这里设置的用户Id为UUID，string类型 -->
+		select * from user u where u.userId = #{userId}
+	</select>
+	<insert id="insertUser" parameterType="User">
+		insert into user(userId, nickName, password, remoteIp, userPicture, createDate) values(#{userId}, #{nickName}, #{password}, #{remoteIp}, #{userPicture}, now())
+	</insert>
+	<update id="updateUser" parameterType="User">
+		update user set user.nickName = #{nickName}, user.password = #{password}, user.userPicture = #{userPicture} where user.userId = #{userId}
+	</update>
+	<delete id="deleteUser" parameterType="string">
+		delete from user where userId = #{userId}
+	</delete>
+</mapper>

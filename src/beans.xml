@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.socketchat" />
+	
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="minPoolSize" value="${jdbc.miniPoolSize}" />
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>  
+		<property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${jdbc.acquireIncrement}"/>
+		<property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}"/>
+		<property name="acquireRetryDelay" value="${jdbc.acquireRetryDelay}"/>
+		<property name="testConnectionOnCheckin" value="${jdbc.testConnectionOnCheckin}"/>
+		<property name="automaticTestTable" value="${jdbc.automaticTestTable}"/>
+		<property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"/>
+		<property name="checkoutTimeout" value="${jdbc.checkoutTimeout}"/>
+	</bean>
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:mybatisConfig.xml"></property>
+    </bean>
+    <!-- 使用SqlSessionTemplate -->
+	 <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">   
+          <constructor-arg index="0" ref="sqlSessionFactory" />   <!-- 将其需要的sqlSessionFactory注入（这里具体实现的是org.mybatis.spring.SqlSessionFactoryBean） -->
+     </bean>  
+	
+	<!-- 创建定义DataSourceTransactionManager的事务 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" /><!-- 将事务需要的dataSource进入注入 -->
+	</bean>
+	
+	<!-- <aop:config>
+     	<aop:pointcut expression="execution(public * com.socketchat.action.*.justDoIt(..))" id="checkLogin"/>
+     	<aop:aspect id="asp" ref="logInterceptor">
+     		<aop:before pointcut-ref="pc" method="log" />
+     	</aop:aspect>
+     </aop:config>	 -->
+	<!-- 使用xml事务 ,推荐使用-->
+	<aop:config>
+		<aop:pointcut id="businessService" expression="execution(public * com.socketchat.service..*.*(..))" /><!-- 定义一个事务执行的切面 -->
+		<aop:advisor pointcut-ref="businessService" advice-ref="tx-advice" /><!-- 将具体的事物实现进行注入 -->
+	</aop:config>
+	<tx:advice id="tx-advice" transaction-manager="txManager"><!-- 设置具体事务的属性，以供在advisor中使用，有些方法需要用到readOnly，有些不需要，提高性能 -->
+		<tx:attributes>
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="get*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+</beans>

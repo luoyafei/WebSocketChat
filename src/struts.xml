@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+          "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	
+	<constant name="struts.devMode" value="true"/>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+	<!-- <constant name="struts.custom.i18n.resources" value="app" /> -->
+	<!-- 设置最大上传文件的大小 2M-->
+	<constant name="struts.multipart.maxSize" value="5242880" />
+	<!-- 配置临时存储地址 -->
+	<constant name="struts.multipart.saveDir" value="/tmp"/>
+	<!-- 将websocket请求过滤 -->
+	<constant name="struts.action.excludePattern" value="/chat/server"></constant>
+	
+	<package name="main" extends="struts-default" namespace="/">
+	
+		<default-action-ref name="index" />
+    	<action name="index">
+    		<result>/login.html</result>
+    	</action>
+	</package>
+	
+    <package name="default" extends="struts-default" namespace="/"> 
+		<action name="SignIn" class="signInAction" />		
+		<action name="getAllHeadPicture" class="getAllHeadPictureAction" />
+		<action name="dealChoiceHead" class="dealChoiceHeadAction">
+			<result name="success">/chat.html</result>
+			<result name="input">/choicePicture.html</result>
+		</action>
+    </package>
+</struts>
+
