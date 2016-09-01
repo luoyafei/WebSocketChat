@@ -68,8 +68,10 @@
 	<tx:advice id="tx-advice" transaction-manager="txManager"><!-- 设置具体事务的属性，以供在advisor中使用，有些方法需要用到readOnly，有些不需要，提高性能 -->
 		<tx:attributes>
 			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="empty*" propagation="REQUIRED" />
 			<tx:method name="get*" read-only="true" />
 		</tx:attributes>
 	</tx:advice>

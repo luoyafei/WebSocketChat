@@ -4,16 +4,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ChatMessage">
-	<!-- 设置起始日期 -->
-	<select id="getAllChatMessage" resultType="ChatMessage" parameterType="_int">
-		select * from chatMessage cm order by cm.messageSendTime asc limit #{start},100 
-	</select>
+	<sql id="field">
+		chatMessageId, chatMessage, chatImg, chatVideo, chatRadio, chatPosition, fromUserId, toUserId, toChatRoomId, messageSendTime, needRead
+	</sql>
+	<sql id="insertCM">
+		#{chatMessageId}, #{chatMessage}, #{chatImg}, #{chatVideo}, #{chatRadio}, #{chatPosition}, #{fromUserId}, #{toUserId}, #{toChatRoomId}, #{messageSendTime}, #{needRead}
+	</sql>
+	
 	<select id="getOneChatMessage" resultType="ChatMessage" parameterType="_int">
 		select * from chatMessage cm where cm.chatMessageId = #{chatMessageId}
 	</select>
-	<insert id="insertChatMessage" parameterType="ChatMessage" useGeneratedKeys="true" keyProperty="id">
-		insert into chatMessage(chatMessage, fromUserId, toUserId, toChatRoomId, messageSendTime, needRead)
-		values(#{chatMessage}, #{fromUserId}, #{toUserId}, #{toChatRoomId}, #{messageSendTime}, #{needRead})
+	<insert id="insertChatMessage" parameterType="ChatMessage">
+		insert into chatMessage(chatMessageId, chatMessage, chatImg, chatVideo, chatRadio, chatPosition, fromUserId, toUserId, toChatRoomId, messageSendTime, needRead) values(#{chatMessageId}, #{chatMessage}, #{chatImg}, #{chatVideo}, #{chatRadio}, #{chatPosition}, #{fromUserId}, #{toUserId}, #{toChatRoomId}, #{messageSendTime}, #{needRead})
 	</insert>
 	<delete id="deleteChatMessage" parameterType="_int">
 		delete from chatMessage cm where cm.chatMessageId = #{chatMessageId}
@@ -28,18 +30,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		delete from chatMessage cm where cm.fromUserId = #{fromUserId}
 	</delete>
 	<!-- 通过两个互相聊天的用户Id，每次获取的开始位置和最大条数，可以获取他们双方的聊天记录  fromUserId,toUserId,start,maxLength-->
-	<select id="getHistoryChatMessagesByTwoUserId" parameterMap="map" resultType="ChatMessage">
+	<select id="getHistoryChatMessagesByTwoUserId" parameterType="map" resultType="ChatMessage">
 		select * from chatMessage cm where (cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId}) or (cm.fromUserId = #{toUserId} and cm.toUserId = #{fromUserId}) order by cm.messageSendTime asc limit #{start},#{maxLength}
 	</select>
 	
 	<!--获取与某人聊天的已读或未读的消息 (String fromUserId, String toUserId, int needRead); -->
-	<select id="getNotReadChatMessages" parameterMap="map" resultType="ChatMessage">
+	<select id="getNotReadChatMessages" parameterType="map" resultType="ChatMessage">
 		select * from chatMessage cm where cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId} and cm.needRead = #{needRead}
 	</select>
 	
-	<!-- 获取某个用户与另外一个用户，已读或未读的所有消息个数(String fromUserId, String toUserId, int needRead); -->
+	<!-- 消息个数，获取某个用户与另外一个用户，已读或未读的所有消息个数(String fromUserId, String toUserId, int needRead); -->
 	<select id="getNotReadChatMessagesCount" parameterType="map" resultType="long">
-		select * from chatMessage cm where cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId} and cm.needRead = #{needRead}
+		select count(*) from chatMessage cm where cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId} and cm.needRead = #{needRead}
 	</select>
 	
 	<!--获取某个用户所有被通知的消息的个数。根据已读未读区分 (String userId, int needRead); -->

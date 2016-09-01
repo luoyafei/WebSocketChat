@@ -72,5 +72,11 @@ public class UserDaoImpl implements IUserDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("User.getRemoteIp4User", remoteIp);
 	}
+	
+	@Override
+	public List<User> getFriendsByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("User.getFriends", userId);
+	}
 
 }

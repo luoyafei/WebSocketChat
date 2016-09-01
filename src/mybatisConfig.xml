@@ -4,9 +4,11 @@
 	<typeAliases>
 		<typeAlias alias="User" type="com.socketchat.bean.User"/>
 		<typeAlias alias="ChatMessage" type="com.socketchat.bean.ChatMessage"/>
+		<typeAlias alias="FriendTab" type="com.socketchat.bean.FriendTab"/>
 	</typeAliases>
 	<mappers>
-		<mapper resource="com/socketchat/bean/User.xml"/>
-		<!-- <mapper resource="com/socketchat/bean/ChatMessage.xml"/> -->
+		<mapper resource="com/socketchat/bean/UserMapper.xml"/>
+		<mapper resource="com/socketchat/bean/ChatMessageMapper.xml"/>
+		<mapper resource="com/socketchat/bean/FriendTabMapper.xml"/>
 	</mappers>
 </configuration>

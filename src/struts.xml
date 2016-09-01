@@ -26,9 +26,15 @@
 		<action name="SignIn" class="signInAction" />		
 		<action name="getAllHeadPicture" class="getAllHeadPictureAction" />
 		<action name="dealChoiceHead" class="dealChoiceHeadAction">
-			<result name="success">/chat.html</result>
+			<result name="success">/choiceModel.html</result>
 			<result name="input">/choicePicture.html</result>
 		</action>
+		
+		<action name="choiceFriend" class="choiceFriendAction">
+			<result name="success">/choiceFriend.jsp</result>
+			<result name="input">/choiceModiel.html</result>
+		</action>
+		
     </package>
 </struts>
 

@@ -20,6 +20,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getOneUser" resultType="User" parameterType="string"><!-- 这里设置的用户Id为UUID，string类型 -->
 		select * from user u where u.userId = #{userId}
 	</select>
+	<!-- 获取朋友friend -->
+	<select id="getFriends" parameterType="string" resultType="User">
+		select * from user u where u.userId in ((select friendAId from friendTab t where t.friendBId = #{userId}) and (select friendBId from friendTab t where t.friendAId = #{userId}))
+	</select>
 	<insert id="insertUser" parameterType="User">
 		insert into user(userId, nickName, password, remoteIp, userPicture, createDate) values(#{userId}, #{nickName}, #{password}, #{remoteIp}, #{userPicture}, now())
 	</insert>

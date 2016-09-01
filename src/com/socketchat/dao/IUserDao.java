@@ -32,4 +32,10 @@ public interface IUserDao {
 	
 	public int getRemoteIp4User(String remoteIp);
 	
+	/**
+	 * 通过用户的Id获取他所有的friend
+	 * @param userId
+	 * @return
+	 */
+	public List<User> getFriendsByUserId(String userId);
 }

@@ -5,17 +5,19 @@ import java.sql.Timestamp;
 
 public class ChatMessage {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "ChatMessage [chatMessageId=" + chatMessageId + ", chatMessage=" + chatMessage + ", fromUserId="
-				+ fromUserId + ", toUserId=" + toUserId + ", toChatRoomId=" + toChatRoomId + ", messageSendTime="
-				+ messageSendTime + ", needRead=" + needRead + "]";
+		return "ChatMessage [chatMessageId=" + chatMessageId + ", chatMessage=" + chatMessage + ", chatImg=" + chatImg
+				+ ", chatVideo=" + chatVideo + ", chatRadio=" + chatRadio + ", chatPosition=" + chatPosition
+				+ ", fromUserId=" + fromUserId + ", toUserId=" + toUserId + ", toChatRoomId=" + toChatRoomId
+				+ ", messageSendTime=" + messageSendTime + ", needRead=" + needRead + "]";
 	}
 	private String chatMessageId;
 	private String chatMessage;
+	private String chatImg;
+	private String chatVideo;
+	private String chatRadio;
+	private String chatPosition;
 	private String fromUserId;
 	private String toUserId;
 	private String toChatRoomId = "0";//默认的聊天室是没有的,0
@@ -34,7 +36,30 @@ public class ChatMessage {
 	public void setChatMessage(String chatMessage) {
 		this.chatMessage = chatMessage;
 	}
-	
+	public String getChatImg() {
+		return chatImg;
+	}
+	public void setChatImg(String chatImg) {
+		this.chatImg = chatImg;
+	}
+	public String getChatVideo() {
+		return chatVideo;
+	}
+	public void setChatVideo(String chatVideo) {
+		this.chatVideo = chatVideo;
+	}
+	public String getChatRadio() {
+		return chatRadio;
+	}
+	public void setChatRadio(String chatRadio) {
+		this.chatRadio = chatRadio;
+	}
+	public String getChatPosition() {
+		return chatPosition;
+	}
+	public void setChatPosition(String chatPosition) {
+		this.chatPosition = chatPosition;
+	}
 	/**
 	 * 构建一个可以直接获取String类型的日期
 	 * @return String

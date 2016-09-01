@@ -4,10 +4,22 @@ import java.sql.Timestamp;
 
 public class ChatRoom {
 
+	
+	@Override
+	public String toString() {
+		return "ChatRoom [chatRoomId=" + chatRoomId + ", chatRoomName=" + chatRoomName + ", creatorId=" + creatorId
+				+ ", chatRoomCreateDate=" + chatRoomCreateDate + ", chatRoomCover=" + chatRoomCover + ", chatBrief="
+				+ chatBrief + ", chatRoomPassword=" + chatRoomPassword + ", needPassword=" + needPassword + "]";
+	}
 	private String chatRoomId;
 	private String chatRoomName;
-	private Timestamp chatRoomCreateDate;
 	private String creatorId;
+	private Timestamp chatRoomCreateDate;
+	private String chatRoomCover;
+	private String chatBrief;
+	private String chatRoomPassword;
+	private String needPassword;
+	
 	
 	public String getChatRoomId() {
 		return chatRoomId;
@@ -42,5 +54,30 @@ public class ChatRoom {
 	}
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
+	}
+	
+	public String getChatRoomCover() {
+		return chatRoomCover;
+	}
+	public void setChatRoomCover(String chatRoomCover) {
+		this.chatRoomCover = chatRoomCover;
+	}
+	public String getChatBrief() {
+		return chatBrief;
+	}
+	public void setChatBrief(String chatBrief) {
+		this.chatBrief = chatBrief;
+	}
+	public String getChatRoomPassword() {
+		return chatRoomPassword;
+	}
+	public void setChatRoomPassword(String chatRoomPassword) {
+		this.chatRoomPassword = chatRoomPassword;
+	}
+	public String getNeedPassword() {
+		return needPassword;
+	}
+	public void setNeedPassword(String needPassword) {
+		this.needPassword = needPassword;
 	}
 }

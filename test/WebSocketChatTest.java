@@ -11,11 +11,15 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import com.socketchat.bean.ChatMessage;
+import com.socketchat.bean.FriendTab;
 import com.socketchat.bean.User;
+import com.socketchat.dao.IChatMessageDao;
 import com.socketchat.dao.IUserDao;
 
 @ContextConfiguration("classpath:beans.xml")
@@ -24,9 +28,15 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 	@Resource(name="sqlSessionFactory")
 	private SqlSessionFactory ssf;
 	
+	@Resource(name="sqlSession")
+	private SqlSessionTemplate sqlSession;
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
+		//IChatMessageDao cmd = new ClassPathXmlApplicationContext("beans.xml").getBean("cmd", IChatMessageDao.class);
 		IUserDao ud = new ClassPathXmlApplicationContext("beans.xml").getBean("ud", IUserDao.class);
+		
+		System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
 		/*User u = ss.selectOne("com.socketchat.bean.User.getOne", 2);
 		ss.commit();
 		ss.close();
@@ -41,10 +51,18 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 		boolean result = ud.insertUser(user);*/
 		/*User user = ud.getOneUser("14fa7c68dec349bfb0418b40c231bcb6");
 		System.out.println(user.toString());*/
-		User user = new User();
-		user.setNickName("罗亚飞");
-		user.setPassword("luoyafei");
-		System.out.println(ud.getOneUserFromNickAndPwd(user).toString());
+//		User user = new User();
+//		user.setNickName("罗亚飞");
+//		user.setPassword("luoyafei");
+//		System.out.println(ud.getOneUserFromNickAndPwd(user).toString());
+		/*ChatMessage cm = new ChatMessage();
+		cm.setFromUserId("fb0266274abb47098b85268186e38d51");
+		cm.setToUserId("fb0266274abb47098b85268186e38d51");
+		cm.setChatMessageId(UUID.randomUUID().toString().replace("-", ""));
+		cm.setToChatRoomId(null);
+		boolean ok = cmd.saveChatMessage(cm);*/
+		//System.out.println(cmd.getNotReadChatMessages("fb0266274abb47098b85268186e38d51", "fb0266274abb47098b85268186e38d51", 0).get(0).getChatMessageId());
+		//System.out.println(cmd.getNotReadChatMessagesCount("fb0266274abb47098b85268186e38d51", "fb0266274abb47098b85268186e38d51", 0));
 	}
 	
 	@Resource(name="ud")
@@ -56,6 +74,33 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 		user.setPassword("luoyafei");
 		System.out.println(ud.getOneUserFromNickAndPwd(user).toString());
 	}
+	
+	@Resource(name="cmd")
+	private IChatMessageDao cmd;
+	@Test
+	public void testCMD() {
+		ChatMessage cm = new ChatMessage();
+		cm.setFromUserId("fb0266274abb47098b85268186e38d51");
+		cm.setToUserId("fb0266274abb47098b85268186e38d51");
+		cm.setChatMessageId(UUID.randomUUID().toString().replace("-", ""));
+		boolean ok = cmd.saveChatMessage(cm);
+		System.out.println(ok);
+	}
+	@Test
+	public void insertFriend() {
+		FriendTab ft = new FriendTab();
+		ft.setFriendTabId(UUID.randomUUID().toString().replace("-", ""));
+		ft.setFriendBId("fb0266274abb47098b85268186e38d51");
+		ft.setFriendAId("2aa2b40d1280449b99d320f8c3e5c3e3");
+		System.out.println(sqlSession.insert("FriendTab.insertFriend", ft));
+	}
+	
+	@Test
+	public void getFriendsTest() {
+		System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
+	}
+	
+	
 	
 	@Test
 	public void testDAO() {

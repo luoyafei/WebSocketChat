@@ -1,8 +1,13 @@
 package com.socketchat.dao.impl;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Component;
 
 import com.socketchat.bean.ChatMessage;
@@ -12,10 +17,20 @@ import com.socketchat.dao.IChatMessageDao;
 @Component(value="cmd")
 public class ChatMessageDaoImpl implements IChatMessageDao {
 
+	private SqlSessionTemplate sqlSession;
+	
+	public SqlSessionTemplate getSqlSession() {
+		return sqlSession;
+	}
+	@Resource(name="sqlSession")
+	public void setSqlSession(SqlSessionTemplate sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
 	@Override
 	public boolean saveChatMessage(ChatMessage cm) {
 		// TODO Auto-generated method stub
-		return false;
+		return sqlSession.insert("ChatMessage.insertChatMessage", cm)==1;
 	}
 
 	@Override
@@ -61,8 +76,7 @@ public class ChatMessageDaoImpl implements IChatMessageDao {
 	}
 
 	@Override
-	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, Timestamp beforeDate,
-			int maxLength) {
+	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, Timestamp beforeDate, int maxLength) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -70,13 +84,21 @@ public class ChatMessageDaoImpl implements IChatMessageDao {
 	@Override
 	public List<ChatMessage> getNotReadChatMessages(String fromUserId, String toUserId, int needRead) {
 		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> maps = new HashMap<String, Object>();
+		maps.put("fromUserId", fromUserId);
+		maps.put("toUserId", toUserId);
+		maps.put("needRead", needRead);
+		return sqlSession.selectList("ChatMessage.getNotReadChatMessages", maps);
 	}
 
 	@Override
 	public Long getNotReadChatMessagesCount(String fromUserId, String toUserId, int needRead) {
 		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> maps = new HashMap<String, Object>();
+		maps.put("fromUserId", fromUserId);
+		maps.put("toUserId", toUserId);
+		maps.put("needRead", needRead);
+		return sqlSession.selectOne("ChatMessage.getNotReadChatMessagesCount", maps);
 	}
 
 	@Override
