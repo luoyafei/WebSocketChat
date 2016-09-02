@@ -1,7 +1,10 @@
 package com.socketchat.chatsocket;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.EndpointConfig;
@@ -11,8 +14,11 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.socketchat.bean.ChatMessage;
 import com.socketchat.bean.User;
 import com.socketchat.dao.IChatMessageDao;
 import com.socketchat.dao.IUserDao;
@@ -23,7 +29,6 @@ public class ChatServer  {
 	
 	private User fromUser;
 	private User toUser;
-	private String toUserId;
 	private int i = 0;
 	private Gson gson = new Gson();
 	private Session session;
@@ -34,139 +39,102 @@ public class ChatServer  {
 	
 	
 	private static final Map<String,Object> connections = new HashMap<String,Object>();  
+	
+	private List<ChatMessage> getNotReadChatMessage(String fromUserId, String toUserId) {
+		
+		return cmd.getNotReadChatMessages(fromUserId, toUserId, 0);
+		
+	}
+	
+	
 	@OnMessage // 接受客户端消息
 	public void onMessage(String msg) throws Exception {
 		
-		
 		session.setMaxIdleTimeout(-1);//设置永不断线
-System.out.println(msg);
-		session.getBasicRemote().sendText("hello:" + msg);
-		System.out.println(ud);
-		if(i == 0) {
-			//toUser = ud.getOneUser(msg);
-		}
-		//System.out.println(toUser.toString());
-		i++;
-	/*	if(i == 0) {
-			toUserId = msg;
-			final User toUserTemp = new User();
-			boolean rightToUser = (boolean)hibernateTemplate.execute(new HibernateCallback() { 
-				@Override
-				public Object doInHibernate(org.hibernate.Session session) throws SQLException {
-					Object[] s = (Object[]) session.createQuery("select u.userId,u.userNickName,u.userPhoto from User u where u.userId = :userId").setParameter("userId", toUserId).list().get(0);
-					if(s != null) {
-						toUserTemp.setUserId(s[0].toString());
-						toUserTemp.setUserNickName(s[1].toString());
-						toUserTemp.setUserPhoto(s[2].toString());
-						return true;
-					} else
-						return false;
-				}
-			});
-			toUser = toUserTemp;
-			toUser.setUserPassword(null);
 
-
-			if(fromUser != null && toUser != null && rightToUser) {
-				jo.add("toUser", gson.toJsonTree(toUser));
-				
-				*//**
-				 * 先获取给我发送的消息，且我没有读取的
-				 *//*
-				List<ChatMessage> notRead = (ArrayList<ChatMessage>)hibernateTemplate.executeFind(new HibernateCallback() {
-					@Override
-					public Object doInHibernate(org.hibernate.Session session) throws HibernateException, SQLException {
-						// TODO Auto-generated method stub
-						String ejbql = "from ChatMessage cm where cm.fromUserId = :fromUserId and cm.toUserId = :toUserId and cm.needRead = 0 and cm.toChatRoomId = '0' order by cm.messageSendTime desc";
-						return (ArrayList<ChatMessage>)session.createQuery(ejbql).setParameter("fromUserId", toUserId).setParameter("toUserId", fromUser.getUserId()).list(); 
-					}
-				});
-				jo.add("notRead", gson.toJsonTree(notRead));
-				jo.addProperty("first", true);
-				
-				*//**
-				 * 将历史消息发送
-				 *//*
-				jo.add("historyMsg", gson.toJsonTree(getHistoryMessage()));
-				
-				
-				session.getBasicRemote().sendText(jo.toString()); // 发送信息到客户端
-				
-				*//**
-				 * 将获取到未读消息设置为已读
-				 *//*
-				if(notRead.size() > 0) {
-					for(int i = 0; i < notRead.size(); i++) {
-						notRead.get(i).setNeedRead(1);
-						hibernateTemplate.update(notRead.get(i));
-					}
-				}
-			}
-			
-		} else {
+		if(i == 0 && msg != null && msg.trim().length() == 32) {
+			toUser = ud.getOneUser(msg);
+			toUser.setPassword(null);
+			toUser.setRemoteIp(null);
 			jo.add("toUser", gson.toJsonTree(toUser));
+			jo.add("fromUser", gson.toJsonTree(fromUser));
+			/**
+			 * 获取历史消息
+			 */
+			jo.add("historyMsg", gson.toJsonTree(getHistoryMessage(0, 100)));
+			
+			/**
+			 * 先获取对方发给自己的未读消息
+			 */
+			List<ChatMessage> notRead = getNotReadChatMessage(toUser.getUserId(), fromUser.getUserId());
+			jo.add("notRead", gson.toJsonTree(notRead));
+			for(ChatMessage cm : notRead) {
+				cm.setNeedRead(1);
+			}
+			cmd.updateChatMessage(notRead);//将其更新为已读
+			
+		} else if(i > 0 && toUser != null && fromUser != null) {
+			
 			ChatMessage cm = null;
 			if(msg != null && msg.trim().hashCode() != 0) {
 				cm = new ChatMessage();
+				cm.setChatMessageId(UUID.randomUUID().toString().replace("-", ""));
 				cm.setChatMessage(msg);
 				cm.setFromUserId(fromUser.getUserId());
-				cm.setToUserId(toUserId);
+				cm.setToUserId(toUser.getUserId());
 				cm.setMessageSendTime(new Timestamp(System.currentTimeMillis()));
 				cm.setNeedRead(0);
-				cm.setToChatRoomId("0");
 				
-				*//**
-				 * 先将发送的消息放入自己的websocketsession内
-				 *//*
-				jo.add("sendOne", gson.toJsonTree(cm));
+				/*若对方在线，进行推送！*/
 				
-				*//**
-				 * 若对方在线，进行推送！
-				 *//*
 				Session toUserSession= null;
-				for(int i = 0; i < connections.size(); i++) {
-					if(connections.containsKey(toUserId)) {
+				for(int j = 0; j < connections.size(); j++) {
+					if(connections.containsKey(toUser.getUserId())) {
 						
 						jo.addProperty("notOnline", true);
 						
-						toUserSession = (Session)connections.get(toUserId);
-						JsonObject j = new JsonObject();
+						toUserSession = (Session)connections.get(toUser.getUserId());
+						JsonObject jb = new JsonObject();
 						User pushToUserShow = new User();
 						pushToUserShow.setUserId(fromUser.getUserId());
-						pushToUserShow.setUserNickName(fromUser.getUserNickName());
-						pushToUserShow.setUserPhoto(fromUser.getUserPhoto());
-						j.add("toUser", gson.toJsonTree(pushToUserShow));
-						j.add("pushToUser", gson.toJsonTree(cm));
-						toUserSession.getBasicRemote().sendText(j.toString());
-						*//**
-						 * 当给用户推送过去后，就将其设置为已读！
-						 *//*
+						pushToUserShow.setNickName(fromUser.getNickName());
+						pushToUserShow.setUserPicture(fromUser.getUserPicture());
+						
+						/**
+						 * 将自己的信息传给对方
+						 */
+						jb.add("OnlineToUser", gson.toJsonTree(pushToUserShow));
+						jb.add("OnlinePushToUserCM", gson.toJsonTree(cm));
+						
+						toUserSession.getBasicRemote().sendText(jb.toString());
 						cm.setNeedRead(1);
 						
+						break;
 					} else {
-						*//**
-						 * 将用户不在线的消息进行推送！
-						 *//*
 						jo.addProperty("notOnline", false);
+						break;
 					}
 				}
-				*//**
-				 * 最后将其存储！
-				 *//*
-				hibernateTemplate.save(cm);
+				
+				cmd.saveChatMessage(cm);
+				
+				jo.add("sendOne", gson.toJsonTree(cm));
 			}
 			
-			
-			jo.add("notRead", gson.toJsonTree(null));
-			session.getBasicRemote().sendText(jo.toString());
-			if(msg.equals("close")) {
-				session.getBasicRemote().sendText("bye bye!"); // 发送信息到客户端
-				session.close(); // 关闭连接点
-			}
-		}
-		i++;*/
+		} else
+			jo.addProperty("error", "请先登录！确认登录状态正常！");
+		
+		session.getBasicRemote().sendText(jo.toString());
+		i++;
 	}
 
+	private List<ChatMessage> getHistoryMessage(int start, int maxLength) {
+		// TODO Auto-generated method stub
+		return cmd.getHistoryChatMessagesByTwoUserId(fromUser.getUserId(), toUser.getUserId(), start, maxLength);
+	}
+
+
+	@SuppressWarnings("resource")
 	@OnOpen // 成功连接时执行此代码
 	public void onOpen(Session session, EndpointConfig config) {
 		
@@ -174,7 +142,12 @@ System.out.println(msg);
 		
 		HttpSession httpSession= (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 		fromUser = (User)httpSession.getAttribute("user");
-
+		fromUser.setRemoteIp(null);
+		fromUser.setPassword(null);
+		
+		ud = new ClassPathXmlApplicationContext("beans.xml").getBean("ud", IUserDao.class);
+		cmd = new ClassPathXmlApplicationContext("beans.xml").getBean("cmd", IChatMessageDao.class);
+		
 		/**
 		 * 将连接成功的用户存入connections内
 		 */

@@ -35,8 +35,7 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 	public static void main(String[] args) {
 		//IChatMessageDao cmd = new ClassPathXmlApplicationContext("beans.xml").getBean("cmd", IChatMessageDao.class);
 		IUserDao ud = new ClassPathXmlApplicationContext("beans.xml").getBean("ud", IUserDao.class);
-		
-		System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
+		//System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
 		/*User u = ss.selectOne("com.socketchat.bean.User.getOne", 2);
 		ss.commit();
 		ss.close();

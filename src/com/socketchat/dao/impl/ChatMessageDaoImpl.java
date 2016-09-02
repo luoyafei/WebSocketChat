@@ -70,9 +70,14 @@ public class ChatMessageDaoImpl implements IChatMessageDao {
 	}
 
 	@Override
-	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, int maxLength) {
+	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, int start, int maxLength) {
 		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> maps = new HashMap<String, Object>();
+		maps.put("fromUserId", fromUserId);
+		maps.put("toUserId", toUserId);
+		maps.put("start", start);
+		maps.put("maxLength", maxLength);
+		return sqlSession.selectList("ChatMessage.getHistoryChatMessagesByTwoUserId", maps);
 	}
 
 	@Override
@@ -113,4 +118,11 @@ public class ChatMessageDaoImpl implements IChatMessageDao {
 		return null;
 	}
 	
+	@Override
+	public void updateChatMessage(List<ChatMessage> notRead) {
+		// TODO Auto-generated method stub
+		for(ChatMessage cm : notRead) {
+			sqlSession.update("ChatMessage.updateChatMessage", cm.getChatMessageId());
+		}
+	}
 }

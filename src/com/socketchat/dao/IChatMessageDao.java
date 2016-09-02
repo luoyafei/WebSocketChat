@@ -38,9 +38,10 @@ public interface IChatMessageDao {
 	 * 通过两个互相聊天的用户Id，每次获取的最大条数，可以获取他们双方的聊天记录
 	 * @param fromUserId
 	 * @param toUserId
+	 * @param start
 	 * @param maxLength
 	 */
-	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, int maxLength);
+	public List<ChatMessage> getHistoryChatMessagesByTwoUserId(String fromUserId, String toUserId, int start, int maxLength);
 	/**
 	 * 将某个日期前与某个人的聊天记录获取到,限制最大条数
 	 * @param fromUserId
@@ -81,5 +82,9 @@ public interface IChatMessageDao {
 	 * @return
 	 */
 	public List<User> getAllNotReadChatMessages(String userId, int needRead);
+	/**
+	 * @param notRead
+	 */
+	public void updateChatMessage(List<ChatMessage> notRead);
 	
 }

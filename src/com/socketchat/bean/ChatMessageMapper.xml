@@ -53,5 +53,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getAllNotReadChatMessages" parameterType="map" resultType="User">
 		select * from user u where u.userId in (select distinct fromUserId from chatMessage cm where cm.toUserId = #{toUserId} and cm.needRead = #{needRead})
 	</select>
+	
+	<update id="updateChatMessage" parameterType="string">
+		update chatMessage cm set cm.needRead = 1 where cm.chatMessageId = #{chatMessageId}
+	</update>
 </mapper>
 

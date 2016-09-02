@@ -35,6 +35,9 @@
 			<result name="input">/choiceModiel.html</result>
 		</action>
 		
+		<action name="signOut" class="signOut">
+			<result>/login.html</result>
+		</action>
     </package>
 </struts>
 

@@ -30,7 +30,7 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
          
          <!-- 这是用来触发抽屉式边栏的按钮 -->
 		<button class="uk-button" data-uk-offcanvas="{target:'#my-id'}" id="viewAllUserInfo">查看所有人的信息</button>
-		<a class="uk-button" href="/ChatNoRefresh/SignOut">注销登陆</a>
+		<a class="uk-button" href="signOut">注销登陆</a>
 		<button class="uk-button" data-uk-offcanvas="{target:'#my-right-id'}" id="viewAllHistoryMessage">查看历史消息</button>
 		
 		<!-- 这是抽屉式边栏 -->
@@ -86,7 +86,7 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         		var webSocket = null;
         		init();
         		var toUser = {};
-        		
+        		var fromUser = {}
         		function init() {
         			
         		    if ('WebSocket' in window) {  
@@ -111,171 +111,76 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
 
         		
         		function onMessage(event) {
-        			//var json = JSON.parse(event.data);
-        			alert(event.data);
-        			/* if(json.notRead != null && json.first != null) {
-        				for(var i = 0; i < json.notRead.length; i++) {
-        					var article = $('<article></article>');
-        					article.attr("class", "uk-comment toUser_article");
-        					var header = $('<header></header>');
-        					header.attr("class", "uk-comment-header");
-        					header.appendTo(article);
-        					var img = $('<img />');
-        					img.attr("class", "uk-comment-avatar uk-border-rounded toUser_photo");
-        					img.attr("src", json.toUser.userPhoto);
-        					img.attr("alt", "图片正在玩命加载中...");
-        					img.attr("style", "width: 50px; height: 50px;");
-        					img.appendTo(header);
-        					var h4 = $('<h4></h4>');
-        					h4.attr("class", "uk-comment-title");
-        					h4.text(json.toUser.userNickName + ":" + json.notRead[i].messageSendTime);
-        					h4.appendTo(header);
-        					var div = $('<div></div>');
-        					div.attr("class", "uk-comment-meta");
-        					div.appendTo(header);
-        					var span = $('<span></span>');
-        					span.attr("class", "uk-h4");
-        					span.text(json.notRead[i].chatMessage);
-        					span.appendTo(div);
-        					
-        					article.appendTo($("#message_panel"));
-        				}
-        				json.notRead = null;//使用之后赋值为 null
-        				 */
-        				/*
-        				接收到历史消息
-        				*/
-        				/* if(json.historyMsg != null) {
-        					for(var i = 0; i < json.historyMsg.length; i++) {
-        						if(json.historyMsg[i].fromUserId == json.toUser.userId) {
-        							var article = $('<article></article>');
-        							article.attr("class", "uk-comment");
-        							var header = $('<header></header>');
-        							header.attr("class", "uk-comment-header");
-        							header.appendTo(article);
-        							var img = $('<img />');
-        							img.attr("class", "uk-comment-avatar uk-border-rounded");
-        							img.attr("src", json.toUser.userPhoto);
-        							img.attr("alt", "图片正在玩命加载中...");
-        							img.attr("style", "width: 50px; height: 50px;");
-        							img.appendTo(header);
-        							var h4 = $('<h4></h4>');
-        							h4.attr("class", "uk-comment-title");
-        							h4.text(json.toUser.userNickName + ":" + json.historyMsg[i].messageSendTime);
-        							h4.appendTo(header);
-        							var div = $('<div></div>');
-        							div.attr("class", "uk-comment-meta");
-        							div.appendTo(header);
-        							var span = $('<span></span>');
-        							span.attr("class", "uk-h4");
-        							span.text(json.historyMsg[i].chatMessage);
-        							span.appendTo(div);
-        							
-        							article.appendTo($("#his_message_panel"));
-        						} else {
-
-        							var article = $('<article></article>');
-        							article.attr("class", "uk-comment uk-comment-primary");
-        							var header = $('<header></header>');
-        							header.attr("class", "uk-comment-header");
-        							header.appendTo(article);
-        							var img = $('<img />');
-        							img.attr("class", "uk-comment-avatar uk-border-rounded");
-        							img.attr("src", '<s:property value="#session.user.userPhoto"/>');
-        							img.attr("alt", "图片正在玩命加载中...");
-        							img.attr("style", "width: 50px; height: 50px;float: right;");
-        							img.appendTo(header);
-        							var h4 = $('<h4></h4>');
-        							h4.attr("class", "uk-comment-title");
-        							h4.attr("style", "float: right;");
-        							h4.text("我" + ":" + json.historyMsg[i].messageSendTime);
-        							h4.appendTo(header);
-        							var div = $('<div></div>');
-        							div.attr("class", "uk-comment-meta uk-flex-right");
-        							div.appendTo(header);
-        							var span = $('<span></span>');
-        							span.attr("class", "uk-h4");
-        							span.text(json.historyMsg[i].chatMessage);
-        							span.appendTo(div);
-        							
-        							
-        							article.appendTo($("#his_message_panel"));
-        						}
-        					}
-        				}
-        				
+        			var json = JSON.parse(event.data);
+        			//alert(JSON.stringify(json.historyMsg));
+        			if(json.fromUser != null && json.toUser != null) {
+        				fromUser = json.fromUser;
+        				toUser = json.toUser;
         			}
         			
+        			if(json.notRead != null) {
+        				for(var i = 0; i < json.notRead.length; i++) {
+        					var $art = $(".article001").clone();
+							$art.attr("class", "uk-badge uk-badge-danger");
+							$art.attr("style", "display: block;color:black;");
+							$art.find("img").attr("src", toUser.userPicture);
+							$art.find("h4").text(toUser.nickName);
+							$art.find("span").text(json.notRead[i].chatMessage + ":" + json.notRead[i].messageSendTime);
+							$art.appendTo(".constrain");
+        				}
+        				json.notRead = null;//使用之后赋值为 null
+        			}
         			if(json.sendOne != null) {
-        				
-        				var article = $('<article></article>');
-        				article.attr("class", "uk-comment uk-comment-primary");
-        				var header = $('<header></header>');
-        				header.attr("class", "uk-comment-header");
-        				header.appendTo(article);
-        				var img = $('<img />');
-        				img.attr("class", "uk-comment-avatar uk-border-rounded");
-        				img.attr("src", '<s:property value="#session.user.userPhoto"/>');
-        				img.attr("alt", "图片正在玩命加载中...");
-        				img.attr("style", "width: 50px; height: 50px;float: right;");
-        				img.appendTo(header);
-        				var h4 = $('<h4></h4>');
-        				h4.attr("class", "uk-comment-title");
-        				h4.attr("style", "float: right;");
-        				h4.text("我" + ":" + json.sendOne.messageSendTime);
-        				h4.appendTo(header);
-        				var div = $('<div></div>');
-        				div.attr("class", "uk-comment-meta uk-flex-right");
-        				div.appendTo(header);
-        				var span = $('<span></span>');
-        				span.attr("class", "uk-h4");
-        				span.text(json.sendOne.chatMessage);
-        				span.appendTo(div);
-        				
-        				article.appendTo($("#message_panel"));
-        				
-        				json.sendOne = null;//使用之后赋值为null
+       					var $art = $(".article001").clone();
+						$art.attr("class", "uk-badge uk-badge-success");
+						$art.attr("style", "display: block;color:black;");
+						$art.find("img").attr("src", fromUser.userPicture);
+						$art.find("h4").text(fromUser.nickName);
+						$art.find("span").text(json.sendOne.chatMessage + ":" + json.sendOne.messageSendTime);
+						
+						$art.appendTo(".constrain");
+        				json.sendOne = null;//使用之后赋值为 null
         			}
-
-        			if(json.pushToUser != null && toPushSpan === 0) { */
-        			  /**
-        				*解决重复问题
-        				*/
-        			/* 	toPushSpan = 1;
-        				var article = $('<article></article>');
-        				article.attr("class", "uk-comment");
-        				var header = $('<header></header>');
-        				header.attr("class", "uk-comment-header");
-        				header.appendTo(article);
-        				var img = $('<img />');
-        				img.attr("class", "uk-comment-avatar uk-border-rounded");
-        				img.attr("src", toUser.userPhoto);
-        				img.attr("alt", "图片正在玩命加载中...");
-        				img.attr("style", "width: 50px; height: 50px;");
-        				img.appendTo(header);
-        				var h4 = $('<h4></h4>');
-        				h4.attr("class", "uk-comment-title");
-        				h4.text(json.toUser.userNickName + ":" + json.pushToUser.messageSendTime);
-        				h4.appendTo(header);
-        				var div = $('<div></div>');
-        				div.attr("class", "uk-comment-meta");
-        				div.appendTo(header);
-        				var span = $('<span></span>');
-        				span.attr("class", "uk-h4");
-        				span.text(json.pushToUser.chatMessage);
-        				span.appendTo(div);
-        				
-        				article.appendTo($("#message_panel"));
-        			} else { */
-        				/**
-        				*解决重复问题
-        				*/
-        			/* 	toPushSpan = 0;
+        			
+        			if(json.OnlinePushToUserCM != null) {
+       					var $art = $(".article001").clone();
+						$art.attr("class", "uk-badge uk-badge-danger");
+						$art.attr("style", "display: block;color:black;");
+						$art.find("img").attr("src", toUser.userPicture);
+						$art.find("h4").text(toUser.nickName);
+						$art.find("span").text(json.OnlinePushToUserCM.chatMessage + ":" + json.OnlinePushToUserCM.messageSendTime);
+						$art.appendTo(".constrain");
+						
+        				OnlinePushToUserCM = null;
         			}
-        			if(json.toUser != null) {
-        				$(".toUser_photo").attr("src", json.toUser.userPhoto);
-        				$(".toUser_nickname").text(json.toUser.userNickName);
-        			} */
+        			
+       				/*
+       				接收到历史消息
+       				*/
+       				if(json.historyMsg != null) {
+       					for(var i = 0; i < json.historyMsg.length; i++) {
+       						if(json.historyMsg[i].fromUserId == toUser.userId) {
+       							
+       							var $art = $(".article001").clone();
+   								$art.attr("class", "uk-badge uk-badge-danger");
+   								$art.attr("style", "display: block;");
+   								$art.find("img").attr("src", toUser.userPicture);
+   								$art.find("h4").text(toUser.nickName);
+   								$art.find("span").text(json.historyMsg[i].chatMessage);
+   								$art.appendTo(".right-container");
+       						} else {
+       							
+       							var $art = $(".article-right").clone();
+   								$art.attr("class", "uk-badge uk-badge-success");
+   								$art.attr("style", "display: block;color:black;");
+   								$art.find("img").attr("src", "<s:property value='#session.user.userPicture' />");
+   								$art.find("h4").text();
+   								$art.find("span").text(json.historyMsg[i].chatMessage);
+   								$art.appendTo(".right-container");
+       						}
+       					}
+       					historyMsg = null;
+       				}
         		}
         		
         		function onOpen(event) {

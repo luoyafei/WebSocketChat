@@ -94,9 +94,6 @@ public class SignInAction extends ActionSupport {
 			if(ud.getRemoteIp4User(remoteIp) > 5) {
 				jo.addProperty("result", false);
 				jo.addProperty("reason", "同一IP地址不能申请超过5个账号！");
-			} else if(ud.getOneUserByNickName(nickName) > 1) {
-				jo.addProperty("result", false);
-				jo.addProperty("reason", "该昵称重复，请换一个！");
 			} else {
 				User user = new User();
 				user.setNickName(nickName);
@@ -104,16 +101,20 @@ public class SignInAction extends ActionSupport {
 				User getOneUser = ud.getOneUserFromNickAndPwd(user);
 
 				if(getOneUser == null) {
-
-					user.setUserId(UUID.randomUUID().toString().replace("-", ""));
-					user.setCreateDate(new Timestamp(System.currentTimeMillis()));
-					user.setRemoteIp(remoteIp);
-					if(ud.insertUser(user)) {
-						ServletActionContext.getRequest().getSession().setAttribute("user", user);
-						jo.addProperty("result", true);
-					} else {
+					if(ud.getOneUserByNickName(nickName) == 1) {
 						jo.addProperty("result", false);
-						jo.addProperty("reason", "注册失败！");
+						jo.addProperty("reason", "该昵称重复，请换一个！");
+					} else {
+						user.setUserId(UUID.randomUUID().toString().replace("-", ""));
+						user.setCreateDate(new Timestamp(System.currentTimeMillis()));
+						user.setRemoteIp(remoteIp);
+						if(ud.insertUser(user)) {
+							ServletActionContext.getRequest().getSession().setAttribute("user", user);
+							jo.addProperty("result", true);
+						} else {
+							jo.addProperty("result", false);
+							jo.addProperty("reason", "注册失败！");
+						}
 					}
 				} else {
 					ServletActionContext.getRequest().getSession().setAttribute("user", getOneUser);
