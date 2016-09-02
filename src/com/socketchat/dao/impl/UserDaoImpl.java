@@ -13,8 +13,6 @@ import com.socketchat.dao.IUserDao;
 @Component(value="ud")
 public class UserDaoImpl implements IUserDao {
 
-	
-	
 	private SqlSessionTemplate sqlSession;
 	/**
 	 * @return the sqlSession
@@ -29,6 +27,12 @@ public class UserDaoImpl implements IUserDao {
 	@Resource(name="sqlSession")
 	public void setSqlSession(SqlSessionTemplate sqlSession) {
 		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public int getOneUserByNickName(String nickName ) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("User.getOneUserByNickName", nickName);
 	}
 	
 	@Override

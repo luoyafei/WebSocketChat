@@ -14,6 +14,8 @@ import javax.websocket.server.ServerEndpoint;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.socketchat.bean.User;
+import com.socketchat.dao.IChatMessageDao;
+import com.socketchat.dao.IUserDao;
 import com.socketchat.websockettoolkit.GetHttpSessionConfigurator;
 
 @ServerEndpoint(value = "/chat/server",configurator=GetHttpSessionConfigurator.class)
@@ -27,13 +29,24 @@ public class ChatServer  {
 	private Session session;
 	private JsonObject jo = new JsonObject();
 	
+	private IUserDao ud;
+	private IChatMessageDao cmd;
+	
+	
 	private static final Map<String,Object> connections = new HashMap<String,Object>();  
 	@OnMessage // 接受客户端消息
 	public void onMessage(String msg) throws Exception {
 		
 		
 		session.setMaxIdleTimeout(-1);//设置永不断线
-		
+System.out.println(msg);
+		session.getBasicRemote().sendText("hello:" + msg);
+		System.out.println(ud);
+		if(i == 0) {
+			//toUser = ud.getOneUser(msg);
+		}
+		//System.out.println(toUser.toString());
+		i++;
 	/*	if(i == 0) {
 			toUserId = msg;
 			final User toUserTemp = new User();

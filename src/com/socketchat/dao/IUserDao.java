@@ -38,4 +38,5 @@ public interface IUserDao {
 	 * @return
 	 */
 	public List<User> getFriendsByUserId(String userId);
+	public int getOneUserByNickName(String nickname);
 }

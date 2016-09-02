@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
-<%@ page import="com.chuangyejia.bean.User" %>
+<%@ page import="com.socketchat.bean.User" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -75,8 +75,8 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
 		        </header>
 		    </article>
         </div>
-		<textarea class="form-control" rows="3" id="content"></textarea>
-		<button type="button" class="btn btn-default" style="float: right;" id="send">发送</button>
+		<textarea class="form-control" rows="3" id="message_input"></textarea>
+		<button type="button" class="btn btn-default" style="float: right;" id="send_message">发送</button>
         <script type="text/javascript">
         	$(document).ready(function() {
         		/**
@@ -90,9 +90,9 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         		function init() {
         			
         		    if ('WebSocket' in window) {  
-        		        webSocket = new WebSocket('ws://localhost:8080/ChuangYeJia/chat/server'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
+        		        webSocket = new WebSocket('ws://localhost:8080/WebSocketChat/chat/server'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
         		    } else if ('MozWebSocket' in window) {  
-        		        webSocket = new MozWebSocket('ws://localhost:8080/ChuangYeJia/chat/server'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
+        		        webSocket = new MozWebSocket('ws://localhost:8080/WebSocketChat/chat/server'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
         		    }
 
         			webSocket.onerror = function(event) {
@@ -111,9 +111,9 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
 
         		
         		function onMessage(event) {
-        			var json = JSON.parse(event.data);
-        			toUser = json.toUser;
-        			if(json.notRead != null && json.first != null) {
+        			//var json = JSON.parse(event.data);
+        			alert(event.data);
+        			/* if(json.notRead != null && json.first != null) {
         				for(var i = 0; i < json.notRead.length; i++) {
         					var article = $('<article></article>');
         					article.attr("class", "uk-comment toUser_article");
@@ -141,11 +141,11 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         					article.appendTo($("#message_panel"));
         				}
         				json.notRead = null;//使用之后赋值为 null
-        				
+        				 */
         				/*
         				接收到历史消息
         				*/
-        				if(json.historyMsg != null) {
+        				/* if(json.historyMsg != null) {
         					for(var i = 0; i < json.historyMsg.length; i++) {
         						if(json.historyMsg[i].fromUserId == json.toUser.userId) {
         							var article = $('<article></article>');
@@ -237,11 +237,11 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         				json.sendOne = null;//使用之后赋值为null
         			}
 
-        			if(json.pushToUser != null && toPushSpan === 0) {
+        			if(json.pushToUser != null && toPushSpan === 0) { */
         			  /**
         				*解决重复问题
         				*/
-        				toPushSpan = 1;
+        			/* 	toPushSpan = 1;
         				var article = $('<article></article>');
         				article.attr("class", "uk-comment");
         				var header = $('<header></header>');
@@ -266,16 +266,16 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         				span.appendTo(div);
         				
         				article.appendTo($("#message_panel"));
-        			} else {
+        			} else { */
         				/**
         				*解决重复问题
         				*/
-        				toPushSpan = 0;
+        			/* 	toPushSpan = 0;
         			}
         			if(json.toUser != null) {
         				$(".toUser_photo").attr("src", json.toUser.userPhoto);
         				$(".toUser_nickname").text(json.toUser.userNickName);
-        			}
+        			} */
         		}
         		
         		function onOpen(event) {

@@ -97,7 +97,11 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 	
 	@Test
 	public void getFriendsTest() {
-		System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
+		List<User> fs = ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51");
+		for (User u : fs) {
+			System.out.println(u.toString()); 
+		}
+		//System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
 	}
 	
 	
