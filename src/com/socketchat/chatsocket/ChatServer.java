@@ -24,7 +24,7 @@ import com.socketchat.dao.IChatMessageDao;
 import com.socketchat.dao.IUserDao;
 import com.socketchat.websockettoolkit.GetHttpSessionConfigurator;
 
-@ServerEndpoint(value = "/chat/server",configurator=GetHttpSessionConfigurator.class)
+@ServerEndpoint(value = "/luoChat",configurator=GetHttpSessionConfigurator.class)
 public class ChatServer  {
 	
 	private User fromUser;
@@ -88,34 +88,30 @@ public class ChatServer  {
 				/*若对方在线，进行推送！*/
 				
 				Session toUserSession= null;
-				for(int j = 0; j < connections.size(); j++) {
-					if(connections.containsKey(toUser.getUserId())) {
-						
-						jo.addProperty("notOnline", true);
-						
-						toUserSession = (Session)connections.get(toUser.getUserId());
-						JsonObject jb = new JsonObject();
-						User pushToUserShow = new User();
-						pushToUserShow.setUserId(fromUser.getUserId());
-						pushToUserShow.setNickName(fromUser.getNickName());
-						pushToUserShow.setUserPicture(fromUser.getUserPicture());
-						
-						/**
-						 * 将自己的信息传给对方
-						 */
-						jb.add("OnlineToUser", gson.toJsonTree(pushToUserShow));
-						jb.add("OnlinePushToUserCM", gson.toJsonTree(cm));
-						
-						toUserSession.getBasicRemote().sendText(jb.toString());
-						cm.setNeedRead(1);
-						
-						break;
-					} else {
-						jo.addProperty("notOnline", false);
-						break;
-					}
+				if(connections.containsKey(toUser.getUserId())) {
+					
+					jo.addProperty("notOnline", true);
+					
+					toUserSession = (Session)connections.get(toUser.getUserId());
+					JsonObject jb = new JsonObject();
+					User pushToUserShow = new User();
+					pushToUserShow.setUserId(fromUser.getUserId());
+					pushToUserShow.setNickName(fromUser.getNickName());
+					pushToUserShow.setUserPicture(fromUser.getUserPicture());
+					
+					/**
+					 * 将自己的信息传给对方
+					 */
+					jb.add("OnlineToUser", gson.toJsonTree(pushToUserShow));
+					jb.add("OnlinePushToUserCM", gson.toJsonTree(cm));
+					
+					toUserSession.getBasicRemote().sendText(jb.toString());
+					cm.setNeedRead(1);
+					
+				} else {
+					jo.addProperty("notOnline", false);
 				}
-				
+			
 				cmd.saveChatMessage(cm);
 				
 				jo.add("sendOne", gson.toJsonTree(cm));

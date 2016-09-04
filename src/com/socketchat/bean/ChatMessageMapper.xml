@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</delete>
 	<!-- 通过两个互相聊天的用户Id，每次获取的开始位置和最大条数，可以获取他们双方的聊天记录  fromUserId,toUserId,start,maxLength-->
 	<select id="getHistoryChatMessagesByTwoUserId" parameterType="map" resultType="ChatMessage">
-		select * from chatMessage cm where (cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId}) or (cm.fromUserId = #{toUserId} and cm.toUserId = #{fromUserId}) order by cm.messageSendTime asc limit #{start},#{maxLength}
+		select * from chatMessage cm where (cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId}) or (cm.fromUserId = #{toUserId} and cm.toUserId = #{fromUserId}) order by cm.messageSendTime desc limit #{start},#{maxLength}
 	</select>
 	
 	<!--获取与某人聊天的已读或未读的消息 (String fromUserId, String toUserId, int needRead); -->

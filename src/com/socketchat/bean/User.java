@@ -4,6 +4,16 @@ import java.sql.Timestamp;
 
 public class User {
 	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(obj instanceof User) {
+			if(this.userId.equals(((User) obj).getUserId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

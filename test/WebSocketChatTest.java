@@ -35,6 +35,19 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 	public static void main(String[] args) {
 		//IChatMessageDao cmd = new ClassPathXmlApplicationContext("beans.xml").getBean("cmd", IChatMessageDao.class);
 		IUserDao ud = new ClassPathXmlApplicationContext("beans.xml").getBean("ud", IUserDao.class);
+		/*List<User> users = ud.getAllUser(0, 2);
+		List<User> friends = ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51");
+		
+		for(User user : users)
+			for(User fr : friends)
+				users.remove(fr);
+		System.out.println(users.size());
+		for(User user : users)
+			System.out.println(user.toString());
+		System.out.println("------------------------");*/
+		
+		
+		
 		//System.out.println(ud.getFriendsByUserId("fb0266274abb47098b85268186e38d51").size());
 		/*User u = ss.selectOne("com.socketchat.bean.User.getOne", 2);
 		ss.commit();
@@ -92,6 +105,14 @@ public class WebSocketChatTest extends AbstractJUnit4SpringContextTests {
 		ft.setFriendBId("fb0266274abb47098b85268186e38d51");
 		ft.setFriendAId("2aa2b40d1280449b99d320f8c3e5c3e3");
 		System.out.println(sqlSession.insert("FriendTab.insertFriend", ft));
+	}
+	
+	@Test
+	public void getHistoryChatMessagesByTwoUserId() {
+		List<ChatMessage> cms = cmd.getHistoryChatMessagesByTwoUserId("fb0266274abb47098b85268186e38d51", "2bd57631893a45fe9caccfde9b00f160", 0, 10);
+		for(ChatMessage cm : cms) {
+			System.out.println(cm.toString());
+		}
 	}
 	
 	@Test

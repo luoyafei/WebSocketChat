@@ -1,5 +1,7 @@
 package com.socketchat.action;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,7 +40,12 @@ public class ChoiceFriendAction extends ActionSupport {
 	@Override
 	public String execute() throws Exception {
 		//ud.getFriendsByUserId(user.getUserId())
-		request.setAttribute("friends", ud.getFriendsByUserId(user.getUserId()));
+		List<User> others = ud.getAllUser(0, 100);
+		List<User> friends = ud.getFriendsByUserId(user.getUserId());
+		for(User fr : friends)
+			others.remove(fr);
+		request.setAttribute("friends", friends);
+		request.setAttribute("others", others);
 		return SUCCESS;
 	}
 }
