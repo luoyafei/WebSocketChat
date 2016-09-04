@@ -26,13 +26,13 @@
 		<action name="SignIn" class="signInAction" />		
 		<action name="getAllHeadPicture" class="getAllHeadPictureAction" />
 		<action name="dealChoiceHead" class="dealChoiceHeadAction">
-			<result name="success">/choiceModel.html</result>
-			<result name="input">/choicePicture.html</result>
+			<result name="success">/pages/choiceModel.html</result>
+			<result name="input">/pages/choicePicture.html</result>
 		</action>
 		
 		<action name="choiceFriend" class="choiceFriendAction">
-			<result name="success">/choiceFriend.jsp</result>
-			<result name="input">/choiceModiel.html</result>
+			<result name="success">/pages/choiceFriend.jsp</result>
+			<result name="input">/pages/choiceModiel.html</result>
 		</action>
 		
 		<action name="signOut" class="signOut">

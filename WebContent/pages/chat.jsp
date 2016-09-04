@@ -17,13 +17,13 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>聊天室</title>
-        <link rel="stylesheet" href="assets/uikit/uikit.css">
-        <link rel="stylesheet" href="assets/uikit/slideshow.css">
-        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-        <script src="assets/uikit/jquery.js"></script>
-        <script src="assets/uikit/uikit.js"></script>
-        <script src="assets/uikit/slideshow.js"></script>
-        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="../assets/uikit/uikit.css">
+        <link rel="stylesheet" href="../assets/uikit/slideshow.css">
+        <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+        <script src="../assets/uikit/jquery.js"></script>
+        <script src="../assets/uikit/uikit.js"></script>
+        <script src="../assets/uikit/slideshow.js"></script>
+        <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     </head>
 
     <body class="uk-height-1-1">
@@ -174,7 +174,7 @@ if(session.getAttribute("user")==null || ((User)session.getAttribute("user")).ge
    								$art.attr("class", "uk-badge uk-badge-success");
    								$art.attr("style", "display: block;color:black;");
    								$art.find("img").attr("src", "<s:property value='#session.user.userPicture' />");
-   								$art.find("h4").text();
+   								$art.find("h4").text(fromUser.nickName);
    								$art.find("span").text(json.historyMsg[i].chatMessage);
    								$art.appendTo(".right-container");
        						}

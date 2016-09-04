@@ -6,11 +6,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>请选择好友</title>
-<link rel="stylesheet" href="assets/uikit/uikit.css">
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-<script src="assets/uikit/jquery.js"></script>
-<script src="assets/uikit/uikit.js"></script>
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="../assets/uikit/uikit.css">
+<link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+<script src="../assets/uikit/jquery.js"></script>
+<script src="../assets/uikit/uikit.js"></script>
+<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">

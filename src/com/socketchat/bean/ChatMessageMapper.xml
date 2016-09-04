@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!--获取与某人聊天的已读或未读的消息 (String fromUserId, String toUserId, int needRead); -->
 	<select id="getNotReadChatMessages" parameterType="map" resultType="ChatMessage">
-		select * from chatMessage cm where cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId} and cm.needRead = #{needRead}
+		select * from chatMessage cm where cm.fromUserId = #{fromUserId} and cm.toUserId = #{toUserId} and cm.needRead = #{needRead} order by cm.messageSendTime asc
 	</select>
 	
 	<!-- 消息个数，获取某个用户与另外一个用户，已读或未读的所有消息个数(String fromUserId, String toUserId, int needRead); -->
