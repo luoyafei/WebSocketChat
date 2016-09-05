@@ -14,9 +14,9 @@ $(document).ready(function() {
         		function init() {
         			
         		    if ('WebSocket' in window) {  
-        		        webSocket = new WebSocket('ws://localhost:8080/WebSocketChat/luoChat'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
+        		        webSocket = new WebSocket('ws://123.56.16.245:8000/WebSocketChat/luoChat'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
         		    } else if ('MozWebSocket' in window) {  
-        		        webSocket = new MozWebSocket('ws://localhost:8080/WebSocketChat/luoChat'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
+        		        webSocket = new MozWebSocket('ws://123.56.16.245:8000/WebSocketChat/luoChat'); //建立连接点 WebSocketAndTomcat要换成自己的项目名
         		    }
 
         			webSocket.onerror = function(event) {

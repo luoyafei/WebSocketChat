@@ -39,7 +39,7 @@ create table chatMessage (
 	messageSendTime datetime default now(),
 	needRead int default 0,
 	constraint foreign key (fromUserId) references user (userId),
-	constraint foreign key (toUserId) references user (userId),
+	constraint foreign key (toUserId) references user (userId)
 )engine=innoDB default charset=utf8
 --申请成为好友
 create table applyAdd (
